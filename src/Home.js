@@ -13,11 +13,9 @@ const Home = () => {
         console.log('use effect ran on each render and re-render');
     });
     
-
     useEffect(()=>{
         console.log('use effect ran on render and re-render of blog');
     }, [blogs]);
-
 
     return ( 
         <div className="home">
