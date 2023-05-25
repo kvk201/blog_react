@@ -9,8 +9,10 @@ const useFetch = (url) => {
      //best place to fetch data
     useEffect(()=>{
         console.log('use effect ran only once during intialization..');
+        const abortController = new AbortController();
+
         setTimeout(() => {
-            fetch(url)
+            fetch(url, {signal: abortController.signal})
                 .then(res=>{
                     if (!res.ok){
                         throw Error('could not fetch data for resource')
@@ -24,10 +26,17 @@ const useFetch = (url) => {
                     setError(null);
                 })
                 .catch(err=>{
-                    setError(err.message)
-                    setIsPending(false)
+                    if(err.name === 'AbortError') {
+                        console.log('fetch aborted');
+                    } 
+                    else
+                    {   
+                        setError(err.message)
+                        setIsPending(false)
+                    }
                 });
                 }, 1000);
+                return () => abortController.abort();
         
     }, [url]);
 
